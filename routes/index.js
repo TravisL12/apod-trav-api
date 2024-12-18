@@ -4,7 +4,6 @@ var router = express.Router();
 const redisClient = require("../redisDb.js");
 const { getDate } = require("../helpers/middleware.js");
 
-/* GET home page. */
 router.get("/apod", getDate, async function (req, res, next) {
   const date = req.date;
   let data = await redisClient.get(formatDateString(date));
@@ -13,17 +12,11 @@ router.get("/apod", getDate, async function (req, res, next) {
     data = await fetchApod(date);
     redisClient.set(formatDateString(date), JSON.stringify(data));
   } else {
-    console.log("REDIS data");
+    console.log("REDIS data", date);
     data = JSON.parse(data);
   }
 
-  console.log(data, "data");
-
-  res.render("index", {
-    title: "Express",
-    date: data.date,
-    description: data.explanation,
-  });
+  res.json(data);
 });
 
 module.exports = router;
