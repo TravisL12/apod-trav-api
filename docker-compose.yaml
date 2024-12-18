@@ -1,0 +1,22 @@
+# DEVELOPMENT!!!!!!
+version: "3.9"
+services:
+  api:
+    stdin_open: true
+    build: ./
+    environment:
+      - REDIS_URL=redis://redis-server:6379
+    volumes:
+      - ./:/usr/src/app
+    ports:
+      - 5005:3000
+    depends_on:
+      - redis-server
+
+  redis-server:
+    image: redis
+    ports:
+      - "8379:6379"
+    restart: always
+    volumes:
+      - ./redis-data:/var/lib/redis
