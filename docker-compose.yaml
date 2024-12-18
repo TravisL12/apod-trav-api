@@ -4,6 +4,8 @@ services:
   api:
     stdin_open: true
     build: ./
+    env_file:
+      - .env
     environment:
       - REDIS_URL=redis://redis-server:6379
     volumes:
