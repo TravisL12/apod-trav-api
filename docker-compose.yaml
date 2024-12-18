@@ -12,7 +12,7 @@ services:
     volumes:
       - ./:/usr/src/app
     ports:
-      - 5005:3000
+      - 8005:3000
     depends_on:
       - redis-server
 
@@ -23,3 +23,8 @@ services:
     restart: always
     volumes:
       - ./redis-data:/var/lib/redis
+
+networks:
+  default:
+    external: true
+    name: fun_network
