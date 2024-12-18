@@ -19,4 +19,22 @@ const fetchApod = async (date) => {
   return data;
 };
 
-module.exports = { buildApodUrl, fetchApod };
+/**
+ *
+ * @param {Date} date
+ * @returns string
+ */
+const formatDateObj = (date) => {
+  return `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`;
+};
+
+/**
+ *
+ * @param {string} date
+ * @returns string
+ */
+const formatDateString = (date) => {
+  return formatDateObj(new Date(date));
+};
+
+module.exports = { buildApodUrl, fetchApod, formatDateString, formatDateObj };

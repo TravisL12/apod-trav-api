@@ -1,10 +1,22 @@
 var express = require("express");
-const { fetchApod } = require("../helpers/utils");
+const { fetchApod, formatDateString } = require("../helpers/utils");
 var router = express.Router();
+const redisClient = require("../redisDb.js");
+const { getDate } = require("../helpers/middleware.js");
 
 /* GET home page. */
-router.get("/apod", async function (req, res, next) {
-  const data = await fetchApod(req.query.date);
+router.get("/apod", getDate, async function (req, res, next) {
+  const date = req.date;
+  let data = await redisClient.get(formatDateString(date));
+
+  if (!data) {
+    data = await fetchApod(date);
+    redisClient.set(formatDateString(date), JSON.stringify(data));
+  } else {
+    console.log("REDIS data");
+    data = JSON.parse(data);
+  }
+
   console.log(data, "data");
 
   res.render("index", {
