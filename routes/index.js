@@ -9,18 +9,23 @@ const redisClient = require("../redisDb.js");
 const { getDate } = require("../helpers/middleware.js");
 
 router.get("/", getDate, async function (req, res, next) {
-  const date = req.date;
-  let data = await redisClient.get(formatDateString(date));
+  try {
+    const date = req.date;
+    let data = await redisClient.get(formatDateString(date));
 
-  if (!data) {
-    data = await fetchApod(date);
-    redisClient.set(formatDateString(date), JSON.stringify(data));
-  } else {
-    console.log("REDIS data", date);
-    data = JSON.parse(data);
+    if (!data) {
+      data = await fetchApod(date);
+      redisClient.set(formatDateString(date), JSON.stringify(data));
+    } else {
+      console.log("REDIS data", date);
+      data = JSON.parse(data);
+    }
+
+    res.json(data);
+  } catch (e) {
+    console.log(e, "Date get error!");
+    res.json({ msg: "not found!", error: e });
   }
-
-  res.json(data);
 });
 
 router.get("/random", async function (req, res, next) {
@@ -38,7 +43,8 @@ router.get("/random", async function (req, res, next) {
     });
     res.json(data);
   } catch (e) {
-    res.json({ msg: "not found!" });
+    console.log(e, "Random error!");
+    res.json({ msg: "not found!", error: e });
   }
 });
 
