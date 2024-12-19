@@ -22,11 +22,13 @@ router.get("/", getDate, async function (req, res, next) {
       } else {
         redisClient.set(formatDateString(date), JSON.stringify(data));
       }
+    } else {
+      console.log(`Redis data ${date}`);
     }
 
     res.json(data);
   } catch (e) {
-    console.log(e, "Date get error!");
+    console.log(e.message, "Date get error!");
     res.json({ msg: "not found!", error: e.message });
   }
 });
@@ -51,7 +53,7 @@ router.get("/random", async function (req, res, next) {
     });
     res.json(data);
   } catch (e) {
-    console.log(e, "Random error!");
+    console.log(e.message, "Random error!");
     res.json({ msg: "not found!", error: e.message });
   }
 });
