@@ -34,6 +34,25 @@ const fetchApod = async (date) => {
 
 /**
  *
+ * @param {string} date
+ * @returns {apodResponse}
+ */
+const fetchRandomApod = async () => {
+  const url = buildApodUrl();
+  url.searchParams.append("count", 10);
+  const apodReq = await fetch(url.toString());
+  const data = await apodReq.json();
+
+  data.forEach((d) => {
+    d.apodLink = buildApodDirectLink(d.date);
+    d.thumbnailLink = thumbSourceLink(d.date);
+  });
+
+  return data;
+};
+
+/**
+ *
  * @param {Date} date
  * @returns {string}
  */
@@ -92,4 +111,10 @@ const thumbSourceLink = (date) => {
   return `https://apod.nasa.gov/apod/calendar/S_${linkDateFormat(date)}.jpg`;
 };
 
-module.exports = { buildApodUrl, fetchApod, formatDateString, formatDateObj };
+module.exports = {
+  buildApodUrl,
+  fetchApod,
+  formatDateString,
+  formatDateObj,
+  fetchRandomApod,
+};

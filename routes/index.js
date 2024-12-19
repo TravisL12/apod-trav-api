@@ -1,10 +1,14 @@
 var express = require("express");
-const { fetchApod, formatDateString } = require("../helpers/utils");
+const {
+  fetchApod,
+  formatDateString,
+  fetchRandomApod,
+} = require("../helpers/utils");
 var router = express.Router();
 const redisClient = require("../redisDb.js");
 const { getDate } = require("../helpers/middleware.js");
 
-router.get("/apod", getDate, async function (req, res, next) {
+router.get("/", getDate, async function (req, res, next) {
   const date = req.date;
   let data = await redisClient.get(formatDateString(date));
 
@@ -16,6 +20,14 @@ router.get("/apod", getDate, async function (req, res, next) {
     data = JSON.parse(data);
   }
 
+  res.json(data);
+});
+
+router.get("/random", async function (req, res, next) {
+  const data = await fetchRandomApod();
+  data.forEach((apod) => {
+    redisClient.set(formatDateString(apod.date), JSON.stringify(apod));
+  });
   res.json(data);
 });
 
