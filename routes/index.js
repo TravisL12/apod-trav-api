@@ -24,8 +24,10 @@ router.get("/", getDate, async function (req, res, next) {
 });
 
 router.get("/random", async function (req, res, next) {
-  const data = await fetchRandomApod();
+  const { count } = req.query;
+  const data = await fetchRandomApod(count);
   data.forEach((apod) => {
+    console.log("REDIS caching data", apod.date);
     redisClient.set(formatDateString(apod.date), JSON.stringify(apod));
   });
   res.json(data);

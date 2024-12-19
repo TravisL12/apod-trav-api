@@ -1,7 +1,7 @@
 const { APOD_API_URL } = require("./constants");
 
 const API_KEY = process.env.APOD_API_KEY;
-
+const RANDOM_COUNT = 10;
 /**
  *
  * @param {string} date
@@ -34,12 +34,12 @@ const fetchApod = async (date) => {
 
 /**
  *
- * @param {string} date
+ * @param {number} count
  * @returns {apodResponse}
  */
-const fetchRandomApod = async () => {
+const fetchRandomApod = async (count = RANDOM_COUNT) => {
   const url = buildApodUrl();
-  url.searchParams.append("count", 10);
+  url.searchParams.append("count", count);
   const apodReq = await fetch(url.toString());
   const data = await apodReq.json();
 
