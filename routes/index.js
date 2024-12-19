@@ -27,7 +27,7 @@ router.get("/", getDate, async function (req, res, next) {
     res.json(data);
   } catch (e) {
     console.log(e, "Date get error!");
-    res.json({ msg: "not found!", error: e });
+    res.json({ msg: "not found!", error: e.message });
   }
 });
 
@@ -52,7 +52,7 @@ router.get("/random", async function (req, res, next) {
     res.json(data);
   } catch (e) {
     console.log(e, "Random error!");
-    res.json({ msg: "not found!", error: e });
+    res.json({ msg: "not found!", error: e.message });
   }
 });
 
