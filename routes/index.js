@@ -12,13 +12,16 @@ router.get("/", getDate, async function (req, res, next) {
   try {
     const date = req.date;
     let data = await redisClient.get(formatDateString(date));
+    data = data ? JSON.parse(data) : undefined;
 
-    if (!data) {
+    if (!data || !!data.error) {
       data = await fetchApod(date);
-      redisClient.set(formatDateString(date), JSON.stringify(data));
-    } else {
-      console.log("REDIS data", date);
-      data = JSON.parse(data);
+
+      if (data.error) {
+        throw new Error(data.error);
+      } else {
+        redisClient.set(formatDateString(date), JSON.stringify(data));
+      }
     }
 
     res.json(data);
@@ -32,6 +35,11 @@ router.get("/random", async function (req, res, next) {
   try {
     const { count } = req.query;
     const data = await fetchRandomApod(count);
+
+    if (data.error) {
+      throw new Error(data.error);
+    }
+
     data.forEach(async (apod) => {
       const isCached = await redisClient.exists(formatDateString(apod.date));
       if (isCached) {
