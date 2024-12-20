@@ -33,6 +33,17 @@ router.get("/", getDate, async function (req, res, next) {
   }
 });
 
+router.get("/test", getDate, async function (req, res, next) {
+  try {
+    const date = req.date;
+    const apodExists = await redisClient.exists(formatDateString(date));
+    res.json({ apodExists });
+  } catch (e) {
+    console.log(e.message, "Date get error!");
+    res.json({ msg: "not found!", error: e.message });
+  }
+});
+
 router.get("/random", async function (req, res, next) {
   try {
     const { count } = req.query;
